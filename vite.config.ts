@@ -62,6 +62,7 @@ function copyWasmPlugin(): Plugin {
 export default defineConfig({
   plugins: [react(), copyWasmPlugin()],
   server: {
+    host: true,
     headers: {
       // Cross-Origin Isolation — required for SharedArrayBuffer / multi-threaded WASM.
       // Without these headers the SDK falls back to single-threaded mode.

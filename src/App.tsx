@@ -1,16 +1,22 @@
 import { useState, useEffect } from 'react';
-import { initSDK, getAccelerationMode } from './runanywhere';
-import { ChatTab } from './components/ChatTab';
-import { VisionTab } from './components/VisionTab';
-import { VoiceTab } from './components/VoiceTab';
-import { ToolsTab } from './components/ToolsTab';
-
-type Tab = 'chat' | 'vision' | 'voice' | 'tools';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { initSDK } from './runanywhere';
+import { Sidebar } from './components/layout/Sidebar';
+import { TopBar } from './components/layout/TopBar';
+import { BottomNav } from './components/layout/BottomNav';
+import { Dashboard } from './pages/Dashboard';
+import { LiveCallMonitor } from './pages/LiveCallMonitor';
+import { MediaScanner } from './pages/MediaScanner';
+import { ScanHistory } from './pages/ScanHistory';
+import { Settings } from './pages/Settings';
+import { ReportScam } from './pages/ReportScam';
+import { Landing } from './pages/Landing';
+import { Login } from './pages/Login';
+import { Signup } from './pages/Signup';
 
 export function App() {
   const [sdkReady, setSdkReady] = useState(false);
   const [sdkError, setSdkError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<Tab>('chat');
 
   useEffect(() => {
     initSDK()
@@ -21,6 +27,9 @@ export function App() {
   if (sdkError) {
     return (
       <div className="app-loading">
+        <div className="loading-icon">
+          <span className="material-symbols-outlined" style={{ fontSize: 48, color: '#ffb3b1' }}>error</span>
+        </div>
         <h2>SDK Error</h2>
         <p className="error-text">{sdkError}</p>
       </div>
@@ -30,43 +39,42 @@ export function App() {
   if (!sdkReady) {
     return (
       <div className="app-loading">
-        <div className="spinner" />
-        <h2>Loading RunAnywhere SDK...</h2>
-        <p>Initializing on-device AI engine</p>
+        <div className="loading-spinner"></div>
+        <h2>Reality Shield</h2>
+        <p>Initializing on-device AI engine...</p>
+        <div className="loading-bar">
+          <div className="loading-bar-fill"></div>
+        </div>
       </div>
     );
   }
 
-  const accel = getAccelerationMode();
-
   return (
-    <div className="app">
-      <header className="app-header">
-        <h1>RunAnywhere AI</h1>
-        {accel && <span className="badge">{accel === 'webgpu' ? 'WebGPU' : 'CPU'}</span>}
-      </header>
-
-      <nav className="tab-bar">
-        <button className={activeTab === 'chat' ? 'active' : ''} onClick={() => setActiveTab('chat')}>
-          💬 Chat
-        </button>
-        <button className={activeTab === 'vision' ? 'active' : ''} onClick={() => setActiveTab('vision')}>
-          📷 Vision
-        </button>
-        <button className={activeTab === 'voice' ? 'active' : ''} onClick={() => setActiveTab('voice')}>
-          🎙️ Voice
-        </button>
-        <button className={activeTab === 'tools' ? 'active' : ''} onClick={() => setActiveTab('tools')}>
-          🔧 Tools
-        </button>
-      </nav>
-
-      <main className="tab-content">
-        {activeTab === 'chat' && <ChatTab />}
-        {activeTab === 'vision' && <VisionTab />}
-        {activeTab === 'voice' && <VoiceTab />}
-        {activeTab === 'tools' && <ToolsTab />}
-      </main>
-    </div>
+    <Routes>
+      {/* Public Routes */}
+      <Route path="/" element={<Landing />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
+      
+      {/* App Shell Routes */}
+      <Route path="/*" element={
+        <div className="app-shell">
+          <Sidebar />
+          <TopBar />
+          <main className="main-canvas">
+            <Routes>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/live-call" element={<LiveCallMonitor />} />
+              <Route path="/media-scan" element={<MediaScanner />} />
+              <Route path="/history" element={<ScanHistory />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/report" element={<ReportScam />} />
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </Routes>
+          </main>
+          <BottomNav />
+        </div>
+      } />
+    </Routes>
   );
 }

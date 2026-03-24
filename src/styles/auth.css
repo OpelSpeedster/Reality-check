@@ -1,0 +1,46 @@
+/* === Auth & Landing Pages CSS === */
+.glass-panel {
+  background: rgba(44, 57, 81, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.hero-gradient {
+  background: radial-gradient(circle at 50% 50%, rgba(60, 215, 255, 0.08) 0%, transparent 70%);
+}
+
+.inner-glow-safe {
+  box-shadow: inset 0 0 15px rgba(78, 222, 163, 0.3);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #3cd7ff 0%, #009ebe 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.shield-glow {
+  box-shadow: inset 0 0 20px rgba(78, 222, 163, 0.15);
+}
+
+.animate-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Tailwind base colors that were defined inline */
+.bg-surface { background-color: var(--surface); }
+.text-on-surface { color: var(--on-surface); }
+.bg-background { background-color: var(--surface); }
+.text-on-background { color: var(--on-surface); }
+
+/* Remove any outer app shell styles from auth/landing pages */
+.auth-layout, .landing-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
